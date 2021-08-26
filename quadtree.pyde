@@ -2,10 +2,10 @@
 # 2021, August 25
 # Quadtrees from Daniel Shiffman
 # v0.01  - Point and rectangle
-# v0.02  - quadtree with insert, subdivide, and make sure points added cause 
-#         subdivide to activate
-# v0.021 - count
-# v0.03  - quadtree.show() with mousedragged add points
+# v0.02  - quadtree with contains, subdivide
+# v0.03  - quadtree with insert
+# v0.031 - count
+# v0.04  - quadtree.show() with mousedragged add points
 
 
 
@@ -115,6 +115,17 @@ class Quadtree:
     #         return "Self contents: I have {} points. Northwest contents: {} Northeast contents: {} Southwest contents: {} Southeast contents: {}".format(len(self.points), self.northwest, self.northeast, self.southwest, self.southeast)
     #     else:
     #         return "I have {} points.".format(len(self.points))
+    
+    
+    def count(self):
+        total = len(self.points)
+        if self.divided:
+            total += self.northwest.count()
+            total += self.northeast.count()
+            total += self.southwest.count()
+            total += self.southeast.count()
+            
+        return total
             
             
 def setup(): 
@@ -122,7 +133,7 @@ def setup():
     colorMode(HSB, 360, 100, 100, 100)
     size(600, 600)         
     points = []
-    quadtree = Quadtree(Rectangle(0, 0, width, height), 4)
+    quadtree = Quadtree(Rectangle(0, 0, width, height), 1)
     for i in range(10000):
         p = Point(random(width), random(height))
         points.append(p)
@@ -133,10 +144,12 @@ def draw():
     global points, quadtree
     for p in points:
         stroke(0, 0, 0, 100)
-        strokeWeight(2)
+        strokeWeight(0.8)
         point(p.x, p.y)
         
     quadtree.show()
+    
+    text(str(quadtree.count()) + " of " + str(len(points)), 30, 30)
         
     
             
